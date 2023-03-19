@@ -216,7 +216,7 @@ class yolo_reid():
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--video_path", default='./MOT16-03.mp4', type=str)
+    parser.add_argument("--video_path", default='./video/MOT16-03.mp4', type=str)
     parser.add_argument("--camera", action="store", dest="cam", type=int, default="-1")
     parser.add_argument('--device', default='cuda:0', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     # yolov5
