@@ -172,7 +172,7 @@ class yolo_reid():
                     bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
 
                 # results.append((idx_frame - 1, bbox_tlwh, identities))
-            print("yolo+deepsort:", time_synchronized() - t1)
+            print("yolo+deepsort using time: ", time_synchronized() - t1)
 
             # 4. 绘制统计信息
             label = "Total People: {}".format(str(total_track))
@@ -207,7 +207,10 @@ class yolo_reid():
                 if cv2.waitKey(1) & 0xFF == 27: #按Esc退出
                     break
 
-            self.logger.info("{}/time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
+            self.logger.info("{}/TIME: {:.03f}s, "
+                             "【FPS】: {:.03f}, "
+                             "Detection numbers: {}, "
+                             "Tracking numbers: {}" \
                              .format(idx_frame, end - t1, 1 / (end - t1),
                                      bbox_xywh.shape[0], len(outputs)))
 
@@ -224,7 +227,6 @@ def parse_args():
     parser.add_argument('--classes', default=[0], type=int, help='filter by class: --class 0, or --class 0 2 3')
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
     parser.add_argument('--augment', action='store_true', help='augmented inference')
-
     # deep_sort
     parser.add_argument("--sort", default=True, help='True: sort model, False: reid model')
     parser.add_argument("--config_deepsort", type=str, default="./configs/deep_sort.yaml")
