@@ -82,7 +82,6 @@ class Person_detect():
 
         half = self.device != 'cpu'  # half precision only supported on CUDA
 
-
         # Run inference
         img = torch.from_numpy(img).to(self.device)
         img = img.half() if half else img.float()  # uint8 to fp16/32

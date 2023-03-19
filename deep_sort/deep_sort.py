@@ -12,12 +12,25 @@ __all__ = ['DeepSort']
 
 
 class DeepSort(object):
-    def __init__(self, model_path, max_dist=0.2, min_confidence=0.3, nms_max_overlap=1.0, max_iou_distance=0.7, max_age=70, n_init=3, nn_budget=100, use_cuda=True):
+    def __init__(self, model_path, max_dist=0.2, min_confidence=0.3, nms_max_overlap=1.0, max_iou_distance=0.7,
+                 max_age=70, n_init=30, nn_budget=100, use_cuda=True):
+        """
+
+        Parameters
+        ----------
+        model_path
+        max_dist
+        min_confidence
+        nms_max_overlap
+        max_iou_distance
+        max_age
+        n_init:轨迹在初始化阶段保持的帧数, 一开始是3，现在改成30
+        nn_budget
+        use_cuda
+        """
         self.min_confidence = min_confidence
         self.nms_max_overlap = nms_max_overlap
-
         self.extractor = Extractor(model_path, use_cuda=use_cuda)
-
         max_cosine_distance = max_dist
         nn_budget = 100
         metric = NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
@@ -46,7 +59,6 @@ class DeepSort(object):
             self.tracker.update(detections)
 
             # output bbox identities
-
             for track in self.tracker.tracks:
                 if not track.is_confirmed() or track.time_since_update > 1:
                     continue
@@ -62,7 +74,7 @@ class DeepSort(object):
     """
     TODO:
         Convert bbox from xc_yc_w_h to xtl_ytl_w_h
-    Thanks JieChen91@github.com for reporting this bug!
+        Thanks JieChen91@github.com for reporting this bug!
     """
     @staticmethod
     def _xywh_to_tlwh(bbox_xywh):

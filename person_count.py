@@ -55,8 +55,8 @@ def put_text_to_cv2_img_with_pil(cv2_img,label,pt,color):
     pil_img = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)  # cv2和PIL中颜色的hex码的储存顺序不同，需转RGB模式
     pilimg = Image.fromarray(pil_img)  # Image.fromarray()将数组类型转成图片格式，与np.array()相反
     draw = ImageDraw.Draw(pilimg)  # PIL图片上打印汉字
-    font = ImageFont.truetype("./configs/simkai.ttf", 25, encoding="utf-8") #simhei.ttf
-    draw.text(pt, label, color,font=font)
+    font = ImageFont.truetype("./configs/cmb10.ttf", 25, encoding="utf-8") #字体
+    draw.text(pt, label, color, font=font)
     return cv2.cvtColor(np.array(pilimg), cv2.COLOR_RGB2BGR)  # 将图片转成cv2.imshow()可以显示的数组格式
 
 
@@ -111,7 +111,8 @@ class yolo_reid():
         up_count = 0
         down_count = 0
         class_counter = Counter()   # store counts of each detected class
-        already_counted = deque(maxlen=50)   # temporary memory for storing counted IDs
+        already_counted = deque(maxlen=50)  # temporary memory for storing counted IDs
+
         for video_path, img, ori_img, vid_cap in self.dataset:
             idx_frame += 1
             # print('aaaaaaaa', video_path, img.shape, im0s.shape, vid_cap)
@@ -203,7 +204,7 @@ class yolo_reid():
 
             if self.args.display:
                 cv2.imshow("test", ori_img)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                if cv2.waitKey(1) & 0xFF == 27: #按Esc退出
                     break
 
             self.logger.info("{}/time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
