@@ -45,8 +45,8 @@ def vector_angle(midpoint, previous_midpoint):
     return math.degrees(math.atan2(y, x))
 
 
-def get_size_with_pil(label,size=25):
-    font = ImageFont.truetype("./configs/simkai.ttf", size, encoding="utf-8")  # simhei.ttf
+def get_size_with_pil(label,size=20):
+    font = ImageFont.truetype("./configs/simkai.ttf", size, encoding="utf-8")
     return font.getsize(label)
 
 
@@ -55,7 +55,7 @@ def put_text_to_cv2_img_with_pil(cv2_img,label,pt,color):
     pil_img = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)  # cv2和PIL中颜色的hex码的储存顺序不同，需转RGB模式
     pilimg = Image.fromarray(pil_img)  # Image.fromarray()将数组类型转成图片格式，与np.array()相反
     draw = ImageDraw.Draw(pilimg)  # PIL图片上打印汉字
-    font = ImageFont.truetype("./configs/cmb10.ttf", 25, encoding="utf-8") #字体
+    font = ImageFont.truetype("./configs/cmb10.ttf", 20, encoding="utf-8") #字体
     draw.text(pt, label, color, font=font)
     return cv2.cvtColor(np.array(pilimg), cv2.COLOR_RGB2BGR)  # 将图片转成cv2.imshow()可以显示的数组格式
 
@@ -92,7 +92,7 @@ class yolo_reid():
         self.video_path = path
         use_cuda = args.use_cuda and torch.cuda.is_available()
         if not use_cuda:
-            warnings.warn("Running in cpu mode which maybe very slow!", UserWarning)
+            warnings.warn(" > [NO CUDA!!] Running in cpu mode which maybe very slow!", UserWarning)
 
         self.person_detect = Person_detect(self.args, self.video_path)
         imgsz = check_img_size(args.img_size, s=32)  # self.model.stride.max())  # check img_size
@@ -221,8 +221,10 @@ def parse_args():
     parser.add_argument('--device', default='cuda:0', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     # yolov5
     parser.add_argument('--weights', nargs='+', type=str, default='./weights/yolov5s.pt', help='model.pt path(s)')
-    parser.add_argument('--img-size', type=int, default=960, help='inference size (pixels)')
-    parser.add_argument('--conf-thres', type=float, default=0.4, help='object confidence threshold')
+    # parser.add_argument('--img-size', type=int, default=960, help='inference size (pixels)')
+    parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)') #提高帧率，调的更小
+    # parser.add_argument('--conf-thres', type=float, default=0.4, help='object confidence threshold') #提高帧率，调的更大
+    parser.add_argument('--conf-thres', type=float, default=0.5, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')
     parser.add_argument('--classes', default=[0], type=int, help='filter by class: --class 0, or --class 0 2 3')
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
@@ -241,7 +243,7 @@ if __name__ == '__main__':
     args = parse_args()
     cfg = get_config()
     cfg.merge_from_file(args.config_deepsort)
-    print(">>> DEBUG, config: ok!")
+    print(">>> DEBUG, config: ", cfg)
 
     yolo_reid = yolo_reid(cfg, args, path=args.video_path)
     with torch.no_grad():
