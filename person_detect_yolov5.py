@@ -1,8 +1,3 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-# @Time : 2021/1/18 下午6:02
-# @Author : zengwb
-
 import argparse
 import os
 import time
@@ -35,7 +30,6 @@ def set_parser():
     parser.add_argument('--view-img', default=True, help='display results')
     parser.add_argument('--save-txt', action='store_true', help='save results to *.txt')
 
-
     parser.add_argument('--augment', action='store_true', help='augmented inference')
     parser.add_argument('--update', action='store_true', help='update all models')
 
@@ -57,7 +51,6 @@ def bbox_r(width, height, *xyxy):
 
 class Person_detect():
     def __init__(self, opt, source):
-
         # Initialize
         self.device = opt.device if torch.cuda.is_available() else 'cpu'
         self.half = self.device != 'cpu'  # half precision only supported on CUDA
@@ -70,7 +63,7 @@ class Person_detect():
         # Load model
         self.model = attempt_load(opt.weights, map_location=self.device)  # load FP32 model
         print("DEBUG: OK self.model!!")
-        print('111111111111111111111111111111111111111', self.model.stride.max())
+        # print('111111111111111111111111111111111111111', self.model.stride.max())
         if self.half:
             self.model.half()  # to FP16
 
@@ -81,7 +74,6 @@ class Person_detect():
     def detect(self, path, img, im0s, vid_cap):
 
         half = self.device != 'cpu'  # half precision only supported on CUDA
-
         # Run inference
         img = torch.from_numpy(img).to(self.device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
@@ -126,8 +118,9 @@ class Person_detect():
                     # print('jjjjjjjjjjjjjjjjjjjj', confs)
         return np.array(bbox_xywh), confs, clas, xy
 
-    
+
+    # TODO: BUG!
 if __name__ == '__main__':
-    person_detect = Person_detect(source='/media/zengwb/PC/Dataset/ReID-dataset/channel1/1.mp4')
+    person_detect = Person_detect(source='./video/MOT20-02.mp4')
     with torch.no_grad():
             person_detect.detect()
