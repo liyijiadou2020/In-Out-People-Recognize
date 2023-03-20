@@ -1,8 +1,3 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-# @Time : 2021/1/18 下午6:02
-# @Author : zengwb
-
 import os
 import cv2
 import torch
@@ -46,7 +41,7 @@ def vector_angle(midpoint, previous_midpoint):
 
 
 def get_size_with_pil(label,size=20):
-    font = ImageFont.truetype("./configs/simkai.ttf", size, encoding="utf-8")
+    font = ImageFont.truetype("./configs/cmss10.ttf", size, encoding="utf-8")
     return font.getsize(label)
 
 
@@ -55,7 +50,7 @@ def put_text_to_cv2_img_with_pil(cv2_img,label,pt,color):
     pil_img = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)  # cv2和PIL中颜色的hex码的储存顺序不同，需转RGB模式
     pilimg = Image.fromarray(pil_img)  # Image.fromarray()将数组类型转成图片格式，与np.array()相反
     draw = ImageDraw.Draw(pilimg)  # PIL图片上打印汉字
-    font = ImageFont.truetype("./configs/cmb10.ttf", 20, encoding="utf-8") #字体
+    font = ImageFont.truetype("./configs/cmss10.ttf", 20, encoding="utf-8") #字体
     draw.text(pt, label, color, font=font)
     return cv2.cvtColor(np.array(pilimg), cv2.COLOR_RGB2BGR)  # 将图片转成cv2.imshow()可以显示的数组格式
 
@@ -222,7 +217,7 @@ def parse_args():
     # yolov5
     parser.add_argument('--weights', nargs='+', type=str, default='./weights/yolov5s.pt', help='model.pt path(s)')
     # parser.add_argument('--img-size', type=int, default=960, help='inference size (pixels)')
-    parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)') #提高帧率，调的更小
+    parser.add_argument('--img-size', type=int, default=512, help='inference size (pixels)') #提高帧率，调的更小
     # parser.add_argument('--conf-thres', type=float, default=0.4, help='object confidence threshold') #提高帧率，调的更大
     parser.add_argument('--conf-thres', type=float, default=0.5, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')
@@ -246,5 +241,5 @@ if __name__ == '__main__':
     print(">>> DEBUG, config: ", cfg)
 
     yolo_reid = yolo_reid(cfg, args, path=args.video_path)
-    with torch.no_grad():
+    with torch.no_grad(): # 临时关闭PyTorch的自动求导机制，增加代码执行效率
         yolo_reid.deep_sort()

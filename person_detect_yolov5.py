@@ -1,8 +1,3 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-# @Time : 2021/1/18 下午6:02
-# @Author : zengwb
-
 import argparse
 import os
 import time
